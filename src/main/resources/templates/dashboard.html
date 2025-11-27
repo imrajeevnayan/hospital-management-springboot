@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMS Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css' rel='stylesheet'/>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 min-h-screen">
+
+<!-- Navbar -->
+<nav class="bg-white shadow-2xl border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+        <div>
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                Hospital Management System
+            </h1>
+            <p class="text-lg text-gray-600 mt-1" th:text="'Welcome, ' + ${#authentication.name}"></p>
+        </div>
+        <form th:action="@{/logout}" method="post" class="inline">
+            <button type="submit" class="bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold px-8 py-4 rounded-full hover:shadow-2xl transition transform hover:scale-105">
+                Logout
+            </button>
+        </form>
+    </div>
+</nav>
+
+<div class="max-w-7xl mx-auto px-6 py-12">
+
+    <!-- INSTANT AUTO-REDIRECT (100% safe & working) -->
+    <div sec:authorize="hasRole('PATIENT')">
+        <script>window.location.replace("/patient/dashboard");</script>
+    </div>
+    <div sec:authorize="hasRole('DOCTOR')">
+        <script>window.location.replace("/doctor/dashboard");</script>
+    </div>
+    <div sec:authorize="hasRole('ADMIN')">
+        <script>window.location.replace("/admin/dashboard");</script>
+    </div>
+
+    <!-- BEAUTIFUL FALLBACK (shown for 0.1s only) -->
+    <div class="text-center py-32">
+        <div class="text-9xl animate-pulse mb-8">Hospital</div>
+        <h2 class="text-5xl font-bold text-gray-800 mb-6">Redirecting to your portal...</h2>
+        <div class="inline-block animate-spin rounded-full h-16 w-16 border-8 border-indigo-600 border-t-transparent"></div>
+    </div>
+
+    <!-- PORTAL CARDS (shown only if JS is disabled) -->
+    <noscript>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mt-20">
+            <div sec:authorize="hasRole('PATIENT')" class="bg-white rounded-3xl shadow-2xl p-12 text-center hover:shadow-3xl transition">
+                <div class="text-8xl mb-6 text-indigo-600">Person</div>
+                <h3 class="text-3xl font-bold mb-8">Patient Portal</h3>
+                <a href="/patient/dashboard" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-5 px-12 rounded-full text-xl font-bold hover:shadow-2xl">
+                    Enter →
+                </a>
+            </div>
+
+            <div sec:authorize="hasRole('DOCTOR')" class="bg-white rounded-3xl shadow-2xl p-12 text-center hover:shadow-3xl transition">
+                <div class="text-8xl mb-6 text-emerald-600">Stethoscope</div>
+                <h3 class="text-3xl font-bold mb-8">Doctor Portal</h3>
+                <a href="/doctor/dashboard" class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-5 px-12 rounded-full text-xl font-bold hover:shadow-2xl">
+                    Enter →
+                </a>
+            </div>
+
+            <div sec:authorize="hasRole('ADMIN')" class="bg-white rounded-3xl shadow-2xl p-12 text-center hover:shadow-3xl transition">
+                <div class="text-8xl mb-6 text-rose-600">Settings</div>
+                <h3 class="text-3xl font-bold mb-8">Admin Panel</h3>
+                <a href="/admin/dashboard" class="bg-gradient-to-r from-rose-600 to-pink-600 text-white py-5 px-12 rounded-full text-xl font-bold hover:shadow-2xl">
+                    Enter →
+                </a>
+            </div>
+        </div>
+    </noscript>
+
+</div>
+</body>
+</html>

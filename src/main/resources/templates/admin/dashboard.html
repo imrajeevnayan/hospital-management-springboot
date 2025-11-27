@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - HMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-rose-50 to-pink-100 min-h-screen">
+
+<nav class="bg-white shadow-2xl">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+        <h1 class="text-4xl font-bold text-rose-600">Admin Panel</h1>
+        <div class="flex gap-6 items-center">
+            <a href="/admin/users" class="text-rose-600 font-bold hover:underline">Manage Users</a>
+            <form th:action="@{/logout}" method="post" class="inline">
+                <button class="bg-rose-600 text-white px-8 py-3 rounded-full hover:bg-rose-700 font-bold">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="max-w-7xl mx-auto px-6 py-12">
+
+    <h2 class="text-4xl font-bold text-gray-800 mb-10">Hospital Overview</h2>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div class="bg-gradient-to-r from-rose-500 to-pink-500 text-white p-10 rounded-3xl shadow-2xl">
+            <div class="text-6xl mb-4">Users</div>
+            <p class="text-5xl font-bold" th:text="${totalUsers}">0</p>
+        </div>
+        <div class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white p-10 rounded-3xl shadow-2xl">
+            <div class="text-6xl mb-4">Wheelchair</div>
+            <p class="text-5xl font-bold" th:text="${totalPatients}">0</p>
+        </div>
+        <div class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white p-10 rounded-3xl shadow-2xl">
+            <div class="text-6xl mb-4">Calendar</div>
+            <p class="text-5xl font-bold" th:text="${totalAppointments}">0</p>
+        </div>
+    </div>
+
+    <!-- Doctors & Recent Appointments -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div class="bg-white rounded-3xl shadow-2xl p-8">
+            <h3 class="text-2xl font-bold mb-6">Our Doctors</h3>
+            <div th:each="doc : ${doctors}" class="flex items-center gap-4 mb-6 p-4 bg-rose-50 rounded-xl">
+                <div class="w-16 h-16 bg-rose-200 rounded-full flex items-center justify-center text-2xl font-bold text-rose-700">
+                    <span th:text="${doc.name.charAt(0)}"></span>
+                </div>
+                <div>
+                    <p class="font-bold text-lg" th:text="${doc.name}"></p>
+                    <p class="text-gray-600" th:text="${doc.email}"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-2xl p-8">
+            <h3 class="text-2xl font-bold mb-6">Recent Appointments</h3>
+            <div th:each="apt : ${recentAppointments}" class="mb-4 p-4 bg-gray-50 rounded-xl">
+                <p class="font-bold" th:text="${apt.title}"></p>
+                <p class="text-sm text-gray-600" th:text="${#temporals.format(apt.startTime, 'dd MMM yyyy, hh:mm a')}"></p>
+                <p class="text-sm">Doctor: <span th:text="${apt.doctor.name}"></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
