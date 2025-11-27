@@ -1,5 +1,4 @@
 package com.hms.hospital.controller;
-
 import com.hms.hospital.entity.Appointment;
 import com.hms.hospital.entity.User;
 import com.hms.hospital.repository.AppointmentRepository;
@@ -30,7 +29,7 @@ public class DoctorController {
         List<Appointment> todayAppointments = appointmentRepo
                 .findByDoctorIdAndStartDate(doctor.getId(), LocalDate.now());
 
-        // Upcoming appointments
+        //  appointments
         List<Appointment> upcoming = appointmentRepo
                 .findByDoctorIdAndStartTimeAfter(doctor.getId(), LocalDateTime.now());
 

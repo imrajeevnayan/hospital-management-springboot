@@ -27,7 +27,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findByDoctorIdAndStartDate(@Param("doctorId") Long doctorId,
                                                  @Param("today") LocalDate today);
 
-    // For calendar events
     List<Appointment> findByDoctorIdOrderByStartTimeAsc(Long doctorId);
     List<Appointment> findByPatientIdOrderByStartTimeAsc(Long patientId);
 }

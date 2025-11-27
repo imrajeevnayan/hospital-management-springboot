@@ -5,42 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Appointments - HMS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css' rel='stylesheet' />
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css' rel='stylesheet'/>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-indigo-50 to-purple-100 min-h-screen">
-<nav class="bg-white shadow-lg">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 class="text-3xl font-bold text-indigo-700">My Appointments</h1>
-        <div class="flex gap-4">
-            <a href="/appointment/book" class="bg-green-600 text-white px-6 py-3 rounded-full hover:bg-green-700 transition font-semibold">
-                Book New Appointment
-            </a>
-            <a href="/logout" class="bg-red-600 text-white px-6 py-3 rounded-full hover:bg-red-700 transition">Logout</a>
+<body class="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 min-h-screen">
+
+<!-- Navbar -->
+<nav class="bg-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-calendar-alt text-2xl text-indigo-600"></i>
+                <h1 class="text-xl sm:text-2xl font-bold text-indigo-700">My Appointments</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="/appointment/book"
+                   class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold px-5 py-3 rounded-full hover:shadow-xl transition text-sm sm:text-base flex items-center gap-2">
+                    <i class="fas fa-plus"></i>
+                    <span class="hidden sm:inline">New Appointment</span>
+                    <span class="sm:hidden">Book</span>
+                </a>
+                <form th:action="@{/logout}" method="post" class="inline">
+                    <button class="text-gray-600 hover:text-red-600 font-medium text-sm sm:text-base flex items-center gap-2">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="hidden sm:inline">Logout</span>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </nav>
 
-<div class="max-w-7xl mx-auto p-8">
-    <div id="calendar" class="bg-white rounded-3xl shadow-2xl p-8"></div>
+<!-- Calendar Container -->
+<div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div class="p-4 sm:p-6 bg-gradient-to-r from-indigo-600 to-purple-600">
+            <h2 class="text-2xl sm:text-3xl font-bold text-white text-center">
+                Your Appointment Calendar
+            </h2>
+            <p class="text-indigo-100 text-center mt-2 text-sm sm:text-base">
+                Click any appointment to view details
+            </p>
+        </div>
+        <div class="p-4 sm:p-6">
+            <div id="calendar"></div>
+        </div>
+    </div>
+
+    <!-- No Appointments Message -->
+    <div id="no-appointments" class="hidden text-center py-16">
+        <i class="fas fa-calendar-times text-8xl text-gray-300 mb-6"></i>
+        <h3 class="text-2xl font-bold text-gray-600 mb-4">No Appointments Yet</h3>
+        <p class="text-gray-500 mb-8">Start your health journey by booking your first appointment!</p>
+        <a href="/appointment/book" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold px-8 py-4 rounded-full hover:shadow-2xl transition text-lg">
+            Book Your First Appointment
+        </a>
+    </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var calendarEl = document.getElementById('calendar');
-      var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
+    document.addEventListener('DOMContentLoaded', function () {
+      const calendarEl = document.getElementById('calendar');
+      const noAppointmentsEl = document.getElementById('no-appointments');
+
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: window.innerWidth < 768 ? 'listWeek' : 'dayGridMonth',
         headerToolbar: {
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          right: 'dayGridMonth,timeGridWeek,listWeek'
         },
         events: '/appointment/events',
+        height: 'auto',
         eventClick: function(info) {
-          alert('Appointment: ' + info.event.title + '\nTime: ' + info.event.start.toLocaleString());
+          alert(
+            `Appointment with Dr. ${info.event.extendedProps.doctorName || 'Unknown'}\n` +
+            `Date: ${info.event.start.toLocaleDateString()}\n` +
+            `Time: ${info.event.start.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}\n` +
+            `Status: ${info.event.extendedProps.status || 'Scheduled'}`
+          );
         },
-        height: 'auto'
+        eventDidMount: function(info) {
+          info.el.style.backgroundColor = '#6366f1';
+          info.el.style.borderColor = '#4f46e5';
+          info.el.style.color = 'white';
+        },
+        loading: function(isLoading) {
+          if (!isLoading && calendar.getEvents().length === 0) {
+            calendarEl.style.display = 'none';
+            noAppointmentsEl.classList.remove('hidden');
+          }
+        }
       });
+
       calendar.render();
     });
 </script>
