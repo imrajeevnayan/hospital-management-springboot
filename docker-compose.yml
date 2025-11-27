@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_DB: hospital_db
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: secret123
+      POSTGRES_PASSWORD: 123
     ports:
       - "5432:5432"
     volumes:
@@ -25,6 +25,7 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: 123
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: false
 
 volumes:
   postgres_data:
